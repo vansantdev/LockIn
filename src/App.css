@@ -1,0 +1,525 @@
+/* =========================
+   LockIn — App.css (v1.0 LOCKED)
+   Theme C: Modern Electric Purple
+   Contains ALL theme tokens + ALL component styles
+   ========================= */
+
+:root{
+  --max: 980px;
+  --radius: 20px;
+  --radius2: 16px;
+
+  --bg: #0a0a0f;
+  --bg2: #07070b;
+
+  --card: #12121a;
+  --card2: #0f0f16;
+
+  --border: #1e1e2a;
+  --border2: #2a2a3a;
+
+  --shadow: 0 18px 55px rgba(0, 0, 0, 0.55);
+
+  --accent: #6c5cff;
+  --accentGlow: #8f7bff;
+  --accentSoft: rgba(108, 92, 255, 0.16);
+  --accentSoft2: rgba(108, 92, 255, 0.10);
+  --accentLine: rgba(108, 92, 255, 0.55);
+
+  --success: #4ade80;
+  --danger: #ff4d6d;
+  --warn: #ffb866;
+
+  --text: #e6e6f0;
+  --muted: rgba(230,230,240,.70);
+}
+
+html, body { height: 100%; }
+
+body{
+  color: var(--text);
+  background:
+    radial-gradient(900px 700px at 35% 18%, rgba(108, 92, 255, .18), transparent 60%),
+    radial-gradient(1000px 900px at 65% 70%, rgba(143, 123, 255, .10), transparent 65%),
+    linear-gradient(180deg, var(--bg), var(--bg2));
+}
+
+/* ---------- Base typography ---------- */
+h1,h2,h3{ margin: 0 0 10px; letter-spacing: .2px; }
+p{ margin: 0 0 10px; color: var(--muted); }
+small{ color: var(--muted); }
+
+.muted{ color: var(--muted); }
+.tiny{ font-size: 12px; color: var(--muted); margin-top: 2px; }
+.warn{ color: rgba(255, 184, 102, .95); }
+
+/* ---------- Base controls ---------- */
+input, textarea, select{
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: rgba(0,0,0,.20);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+textarea{ resize: vertical; min-height: 90px; }
+
+input:focus, textarea:focus, select:focus{
+  border-color: var(--accentLine);
+  box-shadow: 0 0 0 3px rgba(108, 92, 255, .14);
+}
+
+select{ appearance: none; }
+option{ background: #0b0b14; color: var(--text); }
+
+/* Make buttons never look “default browser” */
+button{
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 10px 14px;
+  border: 1px solid var(--border2);
+  background: rgba(0,0,0,.15);
+  color: var(--text);
+  transition: transform .08s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+
+button:hover{
+  background: var(--accentSoft2);
+  border-color: var(--accentLine);
+  box-shadow: 0 0 18px rgba(108, 92, 255, 0.18);
+}
+
+button:active{ transform: translateY(1px); }
+button:disabled{ opacity: .55; cursor: not-allowed; }
+
+/* ---------- App layout (SUPPORTS BOTH class systems) ---------- */
+/* NEW shell system */
+.appShell{
+  min-height: 100vh;
+  padding: 18px 18px 30px;
+  display: flex;
+  justify-content: center;
+}
+.appInner{
+  width: 100%;
+  max-width: var(--max);
+}
+
+/* OLD compact system (if your App.tsx still uses it) */
+.app{
+  width: 100%;
+  max-width: 600px; /* locked */
+  margin: 0 auto;
+  padding: 18px 24px 40px;
+}
+
+.topbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.brand{
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+}
+.sub{
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ---------- Card ---------- */
+.card{
+  background: linear-gradient(180deg, var(--card), var(--card2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-top: 12px;
+}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 14px;
+}
+
+.tabBtn{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,.18);
+  color: var(--text);
+  font-weight: 800;
+}
+
+.tabBtn.active{
+  background: rgba(108, 92, 255, .22);
+  border-color: rgba(108, 92, 255, .65);
+  color: #0b0b14;
+  box-shadow: 0 0 22px rgba(108, 92, 255, .25);
+}
+
+/* ---------- Generic UI blocks ---------- */
+.grid3{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.stat{
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 12px;
+  background: rgba(0,0,0,.12);
+}
+
+.statLabel{ color: var(--muted); font-size: 12px; }
+.statValue{ font-size: 22px; font-weight: 900; margin-top: 6px; }
+
+.rowBetween{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Weekly blocks used by Weekly/History */
+.weeklyRank{
+  border: 1px solid var(--border);
+  border-radius: var(--radius2);
+  padding: 12px;
+  background: rgba(0,0,0,.12);
+}
+.rankRow{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 6px;
+}
+.rankValue{
+  font-size: 28px;
+  font-weight: 1000;
+  letter-spacing: .2px;
+}
+
+/* Lists */
+.weeklyRows{ display: grid; gap: 10px; margin-top: 12px; }
+.weeklyRow{ display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+
+.historyList{ display: grid; gap: 10px; margin-top: 12px; }
+.historyItem{
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.14);
+  border-radius: 14px;
+  padding: 12px;
+}
+.historyTop{ display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.historyTitle{ font-weight: 900; }
+
+/* ---------- Pills ---------- */
+.pill{
+  border: 1px solid rgba(108, 92, 255, .30);
+  background: rgba(108, 92, 255, .08);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.pill.good{
+  border-color: rgba(74, 222, 128, .45);
+  background: rgba(74, 222, 128, .10);
+}
+
+.pill.bad{
+  border-color: rgba(255, 77, 109, .55);
+  background: rgba(255, 77, 109, .10);
+}
+
+.lastRow{
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+/* ---------- Buttons by class (your screens use these) ---------- */
+.btn{
+  border: 1px solid rgba(108, 92, 255, .22);
+  background: rgba(0,0,0,.18);
+  color: rgba(230,230,240,.92);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-weight: 800;
+}
+
+.btn:hover{
+  background: rgba(108, 92, 255, .10);
+  border-color: rgba(108, 92, 255, .40);
+}
+
+.btn.primary{
+  background: rgba(108, 92, 255, .26);
+  border-color: rgba(108, 92, 255, .70);
+  color: #0b0b14;
+}
+
+.btn.ghost{ background: rgba(0,0,0,.14); }
+
+/* ---------- Missions (checkbox button + input row) ---------- */
+.prio{
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.missionRow{
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.check{
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(108, 92, 255, .28);
+  background: rgba(0,0,0,.18);
+  color: var(--text);
+  font-weight: 1000;
+}
+
+.check.on{
+  background: rgba(108, 92, 255, .28);
+  border-color: rgba(108, 92, 255, .75);
+  color: #0b0b14;
+}
+
+/* ---------- Sliders ---------- */
+.range{
+  width: 100%;
+  margin-top: 10px;
+  accent-color: var(--accent);
+}
+
+.energy{
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.energyBadge{
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,.16);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+/* ---------- Footer ---------- */
+.footer{
+  text-align: center;
+  color: rgba(230,230,240,.55);
+  font-size: 12px;
+  margin: 18px 0 0;
+}
+
+/* ---------- Modal (Log Trigger) ---------- */
+.modalBackdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.70);
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  z-index: 50;
+}
+
+.modalCard{
+  width: min(560px, 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(108, 92, 255, .28);
+  background: linear-gradient(180deg, rgba(12,12,20,.92), rgba(8,8,14,.92));
+  box-shadow: 0 30px 90px rgba(0,0,0,.75);
+  padding: 16px;
+}
+
+.modalTop{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.field{ margin-top: 12px; }
+.field > label{
+  display: block;
+  font-size: 12px;
+  color: rgba(230,230,240,.72);
+  margin: 0 0 6px;
+}
+
+.input, .select, .textarea{
+  width: 100%;
+  background: rgba(0,0,0,.20);
+  color: rgba(230,230,240,.95);
+  border: 1px solid rgba(108, 92, 255, .18);
+  border-radius: 14px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.input:focus, .select:focus, .textarea:focus{
+  border-color: rgba(108, 92, 255, .45);
+  box-shadow: 0 0 0 3px rgba(108, 92, 255, .12);
+}
+
+.textarea{ min-height: 92px; }
+
+/* modal segmented buttons */
+.seg{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modalActions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 760px){
+  .tabs{ grid-template-columns: 1fr; }
+  .grid3{ grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px){
+  .modalActions{ flex-direction: column; }
+  .modalActions .btn{ width: 100%; }
+}
+
+/* =========================
+   Weekly → Ops Week Strip (LOCKED)
+   - 7-day grid, bigger cards
+   - Clean pills centered (as you requested)
+   ========================= */
+
+.opsWeekGrid{
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.opsDay{
+  border: 1px solid rgba(108, 92, 255, 0.18);
+  background: rgba(0,0,0,0.14);
+  border-radius: 16px;
+  padding: 12px;
+  min-width: 0;
+  min-height: 108px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.opsDayLabel{
+  font-size: 12px;
+  color: rgba(230, 230, 240, 0.70);
+  margin-bottom: 10px;
+
+  display: flex;
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.opsDayStatus{
+  width: 100%;
+  min-height: 36px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.opsDayPills{
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center; /* Clean centered */
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.opsDayPills .pill{
+  display: inline-flex;
+  white-space: nowrap;
+  margin: 0;
+  line-height: 1;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.opsDay .tiny{
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(230,230,240,.75);
+}
+
+@media (max-width: 760px){
+  .opsWeekGrid{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================
+   Weekly → Mini visualization bar (v1.0)
+   ========================= */
+
+.opsBarTrack{
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  margin-top: 10px;
+  border: 1px solid rgba(108, 92, 255, 0.20);
+  background: rgba(0,0,0,0.14);
+  overflow: hidden;
+}
+
+.opsBarFill{
+  height: 100%;
+  border-radius: 999px;
+  width: 0%;
+  transition: width 200ms ease;
+}
+
+.opsBarFill.isClean{
+  background: rgba(74, 222, 128, 0.45);
+}
+
+.opsBarFill.isHigh{
+  background: rgba(255, 77, 109, 0.55);
+}
