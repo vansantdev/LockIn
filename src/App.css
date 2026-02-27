@@ -114,11 +114,12 @@ button:disabled{ opacity: .55; cursor: not-allowed; }
 /* OLD compact system (if your App.tsx still uses it) */
 .app{
   width: 100%;
-  max-width: 600px; /* locked */
+  max-width: 600px;   /* your change */
   margin: 0 auto;
   padding: 18px 24px 40px;
 }
 
+/* ---------- Topbar ---------- */
 .topbar{
   display: flex;
   justify-content: space-between;
@@ -126,6 +127,30 @@ button:disabled{ opacity: .55; cursor: not-allowed; }
   gap: 12px;
   margin-bottom: 14px;
 }
+
+/* ✅ MOBILE FIT FIX — prevents “opens zoomed / pinch to zoom out” */
+.topbar{
+  flex-wrap: wrap;            /* allow wrapping */
+  align-items: center;
+}
+.topbar > *{ min-width: 0; }
+
+/* If you have a wrapper for actions, these catch common names */
+.topbar .actions,
+.topbar .topActions,
+.topbar .right{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;            /* wrap buttons */
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+/* hard safety */
+.topbar button{
+  flex: 0 1 auto;
+}
+
 .brand{
   font-size: 28px;
   font-weight: 900;
@@ -416,29 +441,37 @@ button:disabled{ opacity: .55; cursor: not-allowed; }
 @media (max-width: 520px){
   .modalActions{ flex-direction: column; }
   .modalActions .btn{ width: 100%; }
+
+  /* topbar tweaks */
+  .topbar{ gap: 10px; }
+  .topbar button{
+    padding: 9px 12px;
+    font-size: 14px;
+  }
 }
 
 /* =========================
-   Weekly → Ops Week Strip (LOCKED)
-   - 7-day grid, bigger cards
-   - Clean pills centered (as you requested)
+   Weekly → Ops Week Strip (BIGGER CARDS / NO SCROLLBAR)
    ========================= */
 
 .opsWeekGrid{
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr)); /* 7 columns, fill the row */
   gap: 12px;
   margin-top: 12px;
-  overflow: hidden;
+  overflow: hidden;          /* no scrollbar */
+  padding-bottom: 0;
 }
 
+/* Bigger card */
 .opsDay{
   border: 1px solid rgba(108, 92, 255, 0.18);
   background: rgba(0,0,0,0.14);
   border-radius: 16px;
+
   padding: 12px;
   min-width: 0;
-  min-height: 108px;
+  min-height: 108px;         /* taller */
 
   display: flex;
   flex-direction: column;
@@ -446,6 +479,7 @@ button:disabled{ opacity: .55; cursor: not-allowed; }
   text-align: left;
 }
 
+/* Date at top */
 .opsDayLabel{
   font-size: 12px;
   color: rgba(230, 230, 240, 0.70);
@@ -457,38 +491,43 @@ button:disabled{ opacity: .55; cursor: not-allowed; }
   gap: 6px;
 }
 
+/* “slot” for pill so every card lines up */
 .opsDayStatus{
   width: 100%;
-  min-height: 36px;
+  min-height: 36px;          /* a bit taller than before */
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
 }
 
+/* Pill row */
 .opsDayPills{
   width: 100%;
   display: flex;
   align-items: flex-start;
-  justify-content: center; /* Clean centered */
+  justify-content: center;   /* your centered clean pill */
   gap: 8px;
   flex-wrap: nowrap;
 }
 
+/* Pill itself */
 .opsDayPills .pill{
   display: inline-flex;
   white-space: nowrap;
   margin: 0;
   line-height: 1;
-  padding: 8px 12px;
+  padding: 8px 12px;         /* bigger pill */
   font-size: 12px;
 }
 
+/* Entries spacing */
 .opsDay .tiny{
   margin-top: 10px;
   font-size: 12px;
   color: rgba(230,230,240,.75);
 }
 
+/* Mobile fallback: allow wrap into fewer columns instead of scrolling */
 @media (max-width: 760px){
   .opsWeekGrid{
     grid-template-columns: repeat(2, minmax(0, 1fr));
