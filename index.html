@@ -3,11 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/LockIn/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lockin</title>
-    <script type="module" crossorigin src="/LockIn/assets/index-DrTNOGfj.js"></script>
-    <link rel="stylesheet" crossorigin href="/LockIn/assets/index-BuZGhYVf.css">
+
+    <!-- ✅ Mobile scaling lock (prevents weird “opens zoomed” behavior) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <title>LockIn</title>
+
+    <!-- ✅ GA4 (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+
+      // ✅ keep default page_view on first load
+      gtag("config", "G-XXXXXXXXXX");
+    </script>
+    <script type="module" crossorigin src="/LockIn/assets/index-Dj-pdb60.js"></script>
+    <link rel="stylesheet" crossorigin href="/LockIn/assets/index-DhBZy2RR.css">
   </head>
+
   <body>
     <div id="root"></div>
   </body>
