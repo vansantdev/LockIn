@@ -4,8 +4,8 @@ import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
 // IMPORTANT: set this to your repo name if deploying to https://username.github.io/<repo>/
-const repo = "lockin"; // <-- change if your repo name is different
-const isGhPagesProjectSite = true;
+const repo = "lockin";
+const isGhPagesProjectSite = false; // ✅ custom domain root
 
 export default defineConfig({
   base: isGhPagesProjectSite ? `/${repo}/` : "/",
