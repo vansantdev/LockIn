@@ -5,7 +5,6 @@ import type { DaySnapshot, LockInState, Tab, UrgeEntry } from "./core/types";
 import { todayKey } from "./core/dates";
 import {
   commitDay,
-  defaultDay,
   loadState,
   saveState,
   setTab as setTabInState,
@@ -47,13 +46,24 @@ function fmtTime(ts: number) {
 }
 
 export default function App() {
+  // =========================
+  // APP STATE
+  // =========================
   const [state, setState] = useState<LockInState>(() => loadState());
   const [logging, setLogging] = useState(false);
   const [hydrated, setHydrated] = useState(false);
 
+  // Saved indicator (+ timestamp)
   const [savedPulse, setSavedPulse] = useState<"idle" | "saved">("idle");
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const savedTimer = useRef<number | null>(null);
+
+  // Undo reset (5 sec window)
+  const [undo, setUndo] = useState<null | { prevDay: DaySnapshot; expiresAt: number }>(null);
+  const undoTimer = useRef<number | null>(null);
+
+  // Import input ref
+  const importRef = useRef<HTMLInputElement | null>(null);
 
   function pulseSaved() {
     setSavedAt(Date.now());
@@ -62,19 +72,12 @@ export default function App() {
     savedTimer.current = window.setTimeout(() => setSavedPulse("idle"), 1400);
   }
 
-  const [undo, setUndo] = useState<null | { prevDay: DaySnapshot; expiresAt: number }>(null);
-  const undoTimer = useRef<number | null>(null);
-
-  const [rolloverBanner, setRolloverBanner] = useState<null | { day: string; ts: number }>(null);
-  const lastDayRef = useRef<string>(todayKey());
-
-  const importRef = useRef<HTMLInputElement | null>(null);
-
   // =========================
   // INITIAL LOAD
   // =========================
   useEffect(() => {
-    setState(loadState());
+    const s = loadState();
+    setState(s);
     setHydrated(true);
 
     track("app_open");
@@ -93,7 +96,9 @@ export default function App() {
       try {
         saveState(state);
         pulseSaved();
-      } catch {}
+      } catch {
+        // ignore storage errors
+      }
     }, 150);
   }, [hydrated, state]);
 
@@ -102,6 +107,7 @@ export default function App() {
   // =========================
   const tab: Tab = state.ui?.tab ?? "today";
   const tKey = todayKey();
+
   const today = useMemo(() => getDay(state, tKey), [state, tKey]);
   const streak = useMemo(() => calcStreakFromState(state), [state]);
 
@@ -109,11 +115,11 @@ export default function App() {
   const lastTabRef = useRef<Tab | null>(null);
   useEffect(() => {
     if (!hydrated) return;
+    if (lastTabRef.current === tab) return;
 
-    if (lastTabRef.current !== tab) {
-      lastTabRef.current = tab;
-      track("tab_click", { tab });
-    }
+    lastTabRef.current = tab;
+    track("tab_click", { tab });
+    trackPageView(`/${tab}`);
   }, [tab, hydrated]);
 
   // =========================
@@ -160,7 +166,10 @@ export default function App() {
   }
 
   function resetTriggersToday() {
-    if (!window.confirm("Reset today's triggers only?")) return;
+    const ok = window.confirm(
+      "Reset today's triggers only?\n\nThis clears ONLY today's logged triggers/urges."
+    );
+    if (!ok) return;
 
     track("reset_day");
 
@@ -184,12 +193,15 @@ export default function App() {
   function undoReset() {
     if (!undo) return;
     track("reset_day_undo");
+
     setState((prev) => commitDay(prev, undo.prevDay));
     setUndo(null);
+
+    if (undoTimer.current) window.clearTimeout(undoTimer.current);
   }
 
   function fullResetEverything() {
-    const typed = window.prompt('Type reset to erase EVERYTHING.');
+    const typed = window.prompt('Type reset to erase EVERYTHING (all days + all history).');
     if (typed !== "reset") return;
 
     track("full_reset_confirmed");
@@ -199,8 +211,6 @@ export default function App() {
     setLogging(false);
     setSavedAt(null);
     setSavedPulse("idle");
-    setRolloverBanner(null);
-    lastDayRef.current = todayKey();
     setState(loadState());
   }
 
@@ -236,8 +246,10 @@ export default function App() {
       pulseSaved();
 
       track("backup_import_success");
-    } catch {
+      alert("Backup imported successfully.");
+    } catch (err: any) {
       track("backup_import_failed");
+      alert(err?.message ?? "Import failed.");
     }
   }
 
@@ -245,6 +257,7 @@ export default function App() {
     setState((prev) => {
       const snap = prev.days[day];
       if (!snap) return prev;
+
       const nextUrges = (snap.urges ?? []).filter((u) => u.id !== id);
       return commitDay(prev, { ...snap, urges: nextUrges });
     });
@@ -267,8 +280,13 @@ export default function App() {
             </div>
           )}
 
-          <button className="btn ghost" onClick={exportBackup}>Export</button>
-          <button className="btn ghost" onClick={clickImport}>Import</button>
+          <button className="btn ghost" onClick={exportBackup} type="button">
+            Export
+          </button>
+
+          <button className="btn ghost" onClick={clickImport} type="button">
+            Import
+          </button>
 
           <input
             ref={importRef}
@@ -278,50 +296,62 @@ export default function App() {
             onChange={onImportFile}
           />
 
-          <button className="btn ghost" onClick={resetTriggersToday}>
+          <button className="btn ghost" onClick={resetTriggersToday} type="button">
             Reset Day
           </button>
 
-          <button className="btn" onClick={fullResetEverything}>
+          <button className="btn" onClick={fullResetEverything} type="button">
             Full Reset
           </button>
         </div>
       </header>
 
+      {undo && Date.now() < undo.expiresAt && (
+        <div className="undoBar">
+          <div>Triggers cleared for today.</div>
+          <button className="btn primary" onClick={undoReset} type="button">
+            Undo
+          </button>
+        </div>
+      )}
+
       <nav className="tabs">
-        <button className={`tabBtn ${tab === "today" ? "active" : ""}`} onClick={() => setTab("today")}>
+        <button
+          className={`tabBtn ${tab === "today" ? "active" : ""}`}
+          onClick={() => setTab("today")}
+          type="button"
+        >
           Today
         </button>
-        <button className={`tabBtn ${tab === "weekly" ? "active" : ""}`} onClick={() => setTab("weekly")}>
+
+        <button
+          className={`tabBtn ${tab === "weekly" ? "active" : ""}`}
+          onClick={() => setTab("weekly")}
+          type="button"
+        >
           Weekly
         </button>
-        <button className={`tabBtn ${tab === "history" ? "active" : ""}`} onClick={() => setTab("history")}>
+
+        <button
+          className={`tabBtn ${tab === "history" ? "active" : ""}`}
+          onClick={() => setTab("history")}
+          type="button"
+        >
           History
         </button>
       </nav>
 
       {tab === "today" && (
-        <TodayScreen
-          day={today}
-          streak={streak}
-          onEditDay={editToday}
-          onLog={openLogModal}
-        />
+        <TodayScreen day={today} streak={streak} onEditDay={editToday} onLog={openLogModal} />
       )}
 
       {tab === "weekly" && <WeeklyScreen urges={today?.urges} />}
 
       {tab === "history" && (
-        <HistoryScreen
-          state={state}
-          onDelete={deleteEntry}
-          onJumpToToday={() => setTab("today")}
-        />
+        <HistoryScreen state={state} onDelete={deleteEntry} onJumpToToday={() => setTab("today")} />
       )}
 
-      <footer className="footer muted">
-        v1.0 • offline-first • PWA ready
-      </footer>
+      <footer className="footer muted">v1.0 • offline-first • PWA ready</footer>
 
       {logging && <LogModal onClose={() => setLogging(false)} onSave={addUrge} />}
     </div>
