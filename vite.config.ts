@@ -3,9 +3,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
 
-// IMPORTANT: set this to your repo name if deploying to https://username.github.io/<repo>/
+// If deploying to https://username.github.io/<repo>/ set isGhPagesProjectSite = true
 const repo = "lockin";
-const isGhPagesProjectSite = false; // ✅ custom domain root
+const isGhPagesProjectSite = false; // ✅ custom domain root (https://imlockin.app)
 
 export default defineConfig({
   base: isGhPagesProjectSite ? `/${repo}/` : "/",
@@ -14,42 +14,55 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
 
-      // Helps you test PWA locally (dev server)
-      devOptions: {
-        enabled: true,
-      },
+      // Anything in /public can be referenced directly here
+      includeAssets: [
+        "favicon.ico",
+        "apple-touch-icon.png",
+        "og-image.png",
+        "og-image-v2.png",
+        "robots.txt",
+        "sitemap.xml",
+        "pwa-192.png",
+        "pwa-512.png",
+        "pwa-512-maskable.png",
+      ],
 
-      includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
         name: "LockIn",
         short_name: "LockIn",
-        description: "Offline-first urge tracking + Life Ops",
-        start_url: isGhPagesProjectSite ? `/${repo}/` : "/",
-        scope: isGhPagesProjectSite ? `/${repo}/` : "/",
-        display: "standalone",
-        background_color: "#0B090A",
+        description: "Tactical impulse control and discipline tracking web app.",
         theme_color: "#0B090A",
-        "icons": [
-  {
-    "src": "/icon-192.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  },
-  {
-    "src": "/icon-512.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  },
-  {
-    "src": "/icon-512-maskable.png",
-    "sizes": "512x512",
-    "type": "image/png",
-    "purpose": "maskable"
-  }
-]
+        background_color: "#0B090A",
+        display: "standalone",
+        scope: "/",
+        start_url: "/",
+        icons: [
+          {
+            src: "/pwa-192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "/pwa-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any",
+          },
+          {
+            src: "/pwa-512-maskable.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
       },
+
       workbox: {
-        navigateFallback: isGhPagesProjectSite ? `/${repo}/index.html` : "/index.html",
+        // For SPA routing
+        navigateFallback: isGhPagesProjectSite
+          ? `/${repo}/index.html`
+          : "/index.html",
       },
     }),
   ],
