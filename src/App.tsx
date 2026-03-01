@@ -65,6 +65,9 @@ export default function App() {
   // Import input ref
   const importRef = useRef<HTMLInputElement | null>(null);
 
+  // SEO/About disclosure (keeps UI clean but still indexable)
+  const [showAbout, setShowAbout] = useState(false);
+
   function pulseSaved() {
     setSavedAt(Date.now());
     setSavedPulse("saved");
@@ -110,6 +113,21 @@ export default function App() {
 
   const today = useMemo(() => getDay(state, tKey), [state, tKey]);
   const streak = useMemo(() => calcStreakFromState(state), [state]);
+
+  // Weekly needs urges from ALL days (it will filter to current week internally)
+  const allUrges = useMemo<UrgeEntry[]>(() => {
+    const days = state.days ?? {};
+    const merged: UrgeEntry[] = [];
+
+    for (const key of Object.keys(days)) {
+      const snap = days[key];
+      if (snap?.urges?.length) merged.push(...snap.urges);
+    }
+
+    // Newest first (optional)
+    merged.sort((a, b) => b.ts - a.ts);
+    return merged;
+  }, [state.days]);
 
   // Track tab change
   const lastTabRef = useRef<Tab | null>(null);
@@ -273,7 +291,7 @@ export default function App() {
           <div className="sub">Control urges • Execute daily • Stay locked</div>
         </div>
 
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
           {savedPulse === "saved" && (
             <div className="saveBadge">
               Saved ✓{savedAt ? ` ${fmtTime(savedAt)}` : ""}
@@ -345,11 +363,61 @@ export default function App() {
         <TodayScreen day={today} streak={streak} onEditDay={editToday} onLog={openLogModal} />
       )}
 
-      {tab === "weekly" && <WeeklyScreen urges={today?.urges} />}
+      {tab === "weekly" && <WeeklyScreen urges={allUrges} />}
 
       {tab === "history" && (
         <HistoryScreen state={state} onDelete={deleteEntry} onJumpToToday={() => setTab("today")} />
       )}
+
+      {/* SEO / About block (collapsible so it doesn't clutter your UI) */}
+      <div style={{ padding: "12px 16px" }}>
+        <button
+          className="btn ghost"
+          type="button"
+          onClick={() => setShowAbout((v) => !v)}
+          aria-expanded={showAbout}
+        >
+          {showAbout ? "Hide About" : "About LockIn"}
+        </button>
+
+        {showAbout && (
+          <section
+            className="muted"
+            style={{
+              marginTop: 12,
+              padding: 16,
+              borderRadius: 12,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              maxWidth: 980,
+            }}
+          >
+            <h2 style={{ marginTop: 0 }}>Impulse Control App for Discipline and Daily Execution</h2>
+
+            <p>
+              LockIn is a tactical urge tracking and discipline system designed to help you control
+              impulses, reduce distractions, and execute daily with purpose.
+            </p>
+
+            <p>
+              Log urges in real time, track streaks, and monitor a daily control score — built to be
+              minimal, fast, and offline-ready as a Progressive Web App.
+            </p>
+
+            <h3>Who Is LockIn For?</h3>
+
+            <p>
+              LockIn is built for people who want stronger self-control and a structured system for
+              tracking impulse resistance and daily execution.
+            </p>
+
+            <p style={{ marginBottom: 0 }}>
+              This section supports discoverability for terms like impulse control app, urge tracking
+              app, discipline tracker, self control tracker, and streak tracker.
+            </p>
+          </section>
+        )}
+      </div>
 
       <footer className="footer muted">v1.0 • offline-first • PWA ready</footer>
 
