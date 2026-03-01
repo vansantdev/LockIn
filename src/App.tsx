@@ -419,7 +419,7 @@ export default function App() {
         )}
       </div>
 
-      <footer className="footer muted">v1.0 • offline-first • PWA ready</footer>
+      <footer className="footer muted">v1.0 • offline-first • PWA </footer>
 
       {logging && <LogModal onClose={() => setLogging(false)} onSave={addUrge} />}
     </div>
