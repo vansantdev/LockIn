@@ -5,7 +5,7 @@ $deployDir = "C:\Users\darkh\lockin-deploy"
 $distDir   = Join-Path $repoRoot "dist"
 $cname     = "imlockin.app"
 
-Write-Host "== LockIn Deploy ==" -ForegroundColor Cyan
+Write-Host "Deploy complete: https://imlockin.app/" -ForegroundColor Green
 
 # Build
 cd $repoRoot
