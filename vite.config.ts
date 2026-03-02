@@ -19,7 +19,7 @@ export default defineConfig({
         "favicon.ico",
         "apple-touch-icon.png",
         "og-image.png",
-        "og-image-v2.png",
+        "og-image-v3.png",
         "robots.txt",
         "sitemap.xml",
         "pwa-192.png",
